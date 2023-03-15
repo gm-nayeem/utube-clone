@@ -29,8 +29,9 @@ const Search = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 5px;
+  color: ${({ theme }) => theme.text};
   border: 1px solid #ccc;
-  border-radius: 3px;
+  border-radius: 5px;
 `;
 
 const Input = styled.input`
@@ -52,13 +53,14 @@ const Button = styled.button`
   align-items: center;
   gap: 5px;
 `;
+
 const Navbar = () => {
   return (
     <Container>
       <Wrapper>
         <Search>
           <Input placeholder="Search" />
-          <SearchOutlined />
+          <SearchOutlined/>
         </Search>
         <Link to="signin" style={{ textDecoration: "none" }}>
           <Button>

@@ -24,17 +24,34 @@ import {
 
 
 const Container = styled.div`
-  flex: 1;
+  flex: 1.4;
+  height: 100vh;
   background-color: ${({ theme }) => theme.bgLighter};
-  /* height: 100vh; */
   color: ${({ theme }) => theme.text};
   font-size: 14px;
-  /* position: sticky;
-  top: 0; */
+  overflow-y: scroll;
+  position: sticky;
+  top: 0;
+
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: rgb(179, 179, 179);
+        border-radius: 3px;
+    }
 `;
+
 const Wrapper = styled.div`
   padding: 18px 26px;
 `;
+
 const Logo = styled.div`
   display: flex;
   align-items: center;
