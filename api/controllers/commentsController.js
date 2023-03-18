@@ -3,7 +3,7 @@ const Comment = require("../models/Comment");
 const Video = require("../models/Video");
 
 // add comment
-export const addComment = async (req, res, next) => {
+const addComment = async (req, res, next) => {
     const newComment = new Comment({ ...req.body, userId: req.user.id });
     try {
         const savedComment = await newComment.save();
@@ -14,7 +14,7 @@ export const addComment = async (req, res, next) => {
 };
 
 // delete comment
-export const deleteComment = async (req, res, next) => {
+const deleteComment = async (req, res, next) => {
     try {
         const comment = await Comment.findById(res.params.id);
         const video = await Video.findById(res.params.id);
@@ -31,11 +31,17 @@ export const deleteComment = async (req, res, next) => {
 };
 
 // get all comments
-export const getComments = async (req, res, next) => {
+const getComments = async (req, res, next) => {
     try {
         const comments = await Comment.find({ videoId: req.params.videoId });
         res.status(200).json(comments);
     } catch (err) {
         next(err);
     }
+};
+
+module.exports = {
+    addComment,
+    deleteComment,
+    getComments,
 };

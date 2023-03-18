@@ -3,7 +3,7 @@ const User = require("../models/User");
 const Video = require("../models/Video");
 
 // update user
-export const update = async (req, res, next) => {
+const update = async (req, res, next) => {
     if (req.params.id === req.user.id) {
         try {
             const updatedUser = await User.findByIdAndUpdate(
@@ -23,7 +23,7 @@ export const update = async (req, res, next) => {
 };
 
 // delete user
-export const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
     if (req.params.id === req.user.id) {
         try {
             await User.findByIdAndDelete(req.params.id);
@@ -37,7 +37,7 @@ export const deleteUser = async (req, res, next) => {
 };
 
 // get single user
-export const getUser = async (req, res, next) => {
+const getUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
         res.status(200).json(user);
@@ -46,7 +46,7 @@ export const getUser = async (req, res, next) => {
     }
 };
 
-export const subscribe = async (req, res, next) => {
+const subscribe = async (req, res, next) => {
     try {
         await User.findByIdAndUpdate(req.user.id, {
             $push: { subscribedUsers: req.params.id },
@@ -60,7 +60,7 @@ export const subscribe = async (req, res, next) => {
     }
 };
 
-export const unsubscribe = async (req, res, next) => {
+const unsubscribe = async (req, res, next) => {
     try {
         try {
             await User.findByIdAndUpdate(req.user.id, {
@@ -78,7 +78,7 @@ export const unsubscribe = async (req, res, next) => {
     }
 };
 
-export const like = async (req, res, next) => {
+const like = async (req, res, next) => {
     const id = req.user.id;
     const videoId = req.params.videoId;
     try {
@@ -92,7 +92,7 @@ export const like = async (req, res, next) => {
     }
 };
 
-export const dislike = async (req, res, next) => {
+const dislike = async (req, res, next) => {
     const id = req.user.id;
     const videoId = req.params.videoId;
     try {
@@ -105,3 +105,13 @@ export const dislike = async (req, res, next) => {
         next(err);
     }
 };
+
+module.exports = {
+    update,
+    deleteUser,
+    getUser,
+    subscribe,
+    unsubscribe,
+    like,
+    dislike
+}

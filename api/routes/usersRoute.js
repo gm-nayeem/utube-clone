@@ -8,7 +8,7 @@ const {
     like,
     dislike
 } = require("../controllers/usersController");
-const {verifyToken} = require("../middleware/verifyToken");
+const verifyToken = require("../middleware/verifyToken");
 
 
 //update user

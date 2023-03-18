@@ -3,13 +3,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
-// const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 
 // routes
-import userRoutes from "./routes/users.js";
-import videoRoutes from "./routes/videos.js";
-import commentRoutes from "./routes/comments.js";
-import authRoutes from "./routes/auth.js";
+const userRoutes = require("./routes/usersRoute");
+const videoRoutes = require("./routes/videosRoute");
+const commentRoutes = require("./routes/commentsRoute");
+const authRoutes = require("./routes/authRoute");
 
 
 const app = express();
@@ -30,7 +30,7 @@ const connect = () => {
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
-// app.use(cookieParser());
+app.use(cookieParser());
 
 
 // routes

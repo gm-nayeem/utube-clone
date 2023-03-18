@@ -1,15 +1,15 @@
 const router =  require("express").Router();
 const { 
-    addVideo, addView, getByTag, getVideo, 
-    random, search, sub, trend 
+    addVideo, addView, getByTag, getVideo, random, 
+    search, sub, trend, updateVideo, deleteVideo 
 } = require("../controllers/videosController");
-const {verifyToken} = require("../middleware/verifyToken");
+const verifyToken = require("../middleware/verifyToken");
 
 
 //create a video
 router.post("/", verifyToken, addVideo)
-router.put("/:id", verifyToken, addVideo)
-router.delete("/:id", verifyToken, addVideo)
+router.put("/:id", verifyToken, updateVideo)
+router.delete("/:id", verifyToken, deleteVideo)
 router.get("/find/:id", getVideo)
 router.put("/view/:id", addView)
 router.get("/trend", trend)
