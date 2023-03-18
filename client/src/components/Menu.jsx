@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import LamaTube from "../assets/logo.png";
+import MernTube from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import {
     Home,
@@ -18,9 +18,11 @@ import {
     SettingsOutlined,
     FlagOutlined,
     HelpOutlineOutlined,
-    SettingsBrightnessOutlined
-
+    SettingsBrightnessOutlined,
+    Logout
 } from '@mui/icons-material';
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 
 const Container = styled.div`
@@ -104,12 +106,21 @@ const Title = styled.h2`
 `;
 
 const Menu = ({ darkMode, setDarkMode }) => {
+    const { currentUser } = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate("/signin");
+        console.log("User has been loged out");
+    }
+
     return (
         <Container>
             <Wrapper>
                 <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
                     <Logo>
-                        <Img src={LamaTube} />
+                        <Img src={MernTube} />
                         MernTube
                     </Logo>
                 </Link>
@@ -119,14 +130,18 @@ const Menu = ({ darkMode, setDarkMode }) => {
                         Home
                     </Item>
                 </Link>
-                <Item>
-                    <ExploreOutlined />
-                    Explore
-                </Item>
-                <Item>
-                    <SubscriptionsOutlined />
-                    Subscriptions
-                </Item>
+                <Link to="/trends" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Item>
+                        <ExploreOutlined />
+                        Explore
+                    </Item>
+                </Link>
+                <Link to="/subscriptions" style={{ textDecoration: "none", color: "inherit" }}>
+                    <Item>
+                        <SubscriptionsOutlined />
+                        Subscriptions
+                    </Item>
+                </Link>
                 <Hr />
                 <Item>
                     <VideoLibraryOutlined />
@@ -137,16 +152,30 @@ const Menu = ({ darkMode, setDarkMode }) => {
                     History
                 </Item>
                 <Hr />
-                <Login>
-                    Sign in to like videos, comment, and subscribe.
-                    <Link to="signin" style={{ textDecoration: "none" }}>
-                        <Button>
-                            <AccountCircleOutlined />
-                            SIGN IN
-                        </Button>
-                    </Link>
-                </Login>
-                <Hr />
+                {
+                    !currentUser ? (
+                        <>
+                            <Login>
+                                Sign in to like videos, comment, and subscribe.
+                                <Link to="signin" style={{ textDecoration: "none" }}>
+                                    <Button>
+                                        <AccountCircleOutlined />
+                                        SIGN IN
+                                    </Button>
+                                </Link>
+                            </Login>
+                            <Hr />
+                        </>
+                    ) : (
+                        <>
+                            <Button onClick={handleLogout}>
+                                <Logout />
+                                LOGOUT
+                            </Button>
+                            <Hr />
+                        </>
+                    )
+                }
                 <Title>BEST OF LAMATUBE</Title>
                 <Item>
                     <LibraryMusicOutlined />

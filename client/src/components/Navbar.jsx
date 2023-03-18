@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { AccountCircleOutlined, SearchOutlined } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import {
+  AccountCircleOutlined,
+  SearchOutlined,
+  VideoCallOutlined,
+  Logout,
+  Person2
+} from "@mui/icons-material";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/userSlice";
+
 
 const Container = styled.div`
   position: sticky;
@@ -54,20 +63,68 @@ const Button = styled.button`
   gap: 5px;
 `;
 
+const User = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text};
+  cursor: pointer;
+`;
+
+const Avatar = styled.img`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #999;
+`;
+
 const Navbar = () => {
+  const { currentUser } = useSelector(state => state.user);
+  const [searchTerm, setSearchTerm] = useState(false);
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/signin");
+    console.log("User has been loged out");
+  }
+
   return (
     <Container>
       <Wrapper>
         <Search>
-          <Input placeholder="Search" />
-          <SearchOutlined/>
+          <Input
+            placeholder="Search"
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <SearchOutlined
+            onClick={() => navigate(`/search?q=${searchTerm}`)}
+          />
         </Search>
-        <Link to="signin" style={{ textDecoration: "none" }}>
-          <Button>
-            <AccountCircleOutlined />
-            SIGN IN
-          </Button>
-        </Link>
+        {
+          currentUser ? (
+            <User>
+              <VideoCallOutlined onClick={() => setOpen(true)} />
+              <Avatar src={currentUser.img} />
+              {currentUser.name}
+              <Button onClick={handleLogout}>
+                <Logout />
+                LOGOUT
+              </Button>
+            </User>
+          ) : (
+            <Link to="signin" style={{ textDecoration: "none" }}>
+              <Button>
+                <AccountCircleOutlined />
+                SIGN IN
+              </Button>
+            </Link>
+          )
+        }
       </Wrapper>
     </Container>
   );

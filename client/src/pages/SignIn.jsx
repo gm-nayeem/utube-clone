@@ -1,5 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import {
+  loginFailure, loginStart, loginSuccess
+} from "../redux/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import newRequest from "../utils/request";
+import {auth, googleProvider} from "../utils/firebase";
+import {signInWithPopup} from "firebase/auth";
+// import { async } from "@firebase/util";
+
 
 const Container = styled.div`
   display: flex;
@@ -64,30 +74,102 @@ const Link = styled.span`
 `;
 
 const SignIn = () => {
-    return (
-        <Container>
-            <Wrapper>
-                <Title>Sign in</Title>
-                <SubTitle>to continue to LamaTube</SubTitle>
-                <Input placeholder="username" />
-                <Input type="password" placeholder="password" />
-                <Button>Sign in</Button>
-                <Title>or</Title>
-                <Input placeholder="username" />
-                <Input placeholder="email" />
-                <Input type="password" placeholder="password" />
-                <Button>Sign up</Button>
-            </Wrapper>
-            <More>
-                English(USA)
-                <Links>
-                    <Link>Help</Link>
-                    <Link>Privacy</Link>
-                    <Link>Terms</Link>
-                </Links>
-            </More>
-        </Container>
-    );
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // handle signup
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      await newRequest.post("/auth/signup", { name, email, password });
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // handle login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    dispatch(loginStart());
+    try {
+      const res = await newRequest.post("/auth/signin", { name, password });
+      dispatch(loginSuccess(res.data));
+      navigate("/")
+    } catch (err) {
+      dispatch(loginFailure());
+    }
+  };
+
+  // google login
+  const signInWithGoogle = async () => {
+    dispatch(loginStart());
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        newRequest
+          .post("/auth/google", {
+            name: result.user.displayName,
+            email: result.user.email,
+            img: result.user.photoURL,
+          })
+          .then((res) => {
+            console.log(res);
+            dispatch(loginSuccess(res.data));
+            navigate("/");
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        dispatch(loginFailure());
+      });
+  };
+
+
+  return (
+    <Container>
+      <Wrapper>
+        <Title>Sign in</Title>
+        <SubTitle>to continue to MernTube</SubTitle>
+        <Input
+          placeholder="username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          type="password" placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={handleLogin}>Sign in</Button>
+        <Title>or</Title>
+        <Button onClick={signInWithGoogle}>Signin with Google</Button>
+        <Title>or</Title>
+        <Input
+          placeholder="username"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          placeholder="email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          type="password" placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button onClick={handleSignup}>Sign up</Button>
+      </Wrapper>
+      <More>
+        English(USA)
+        <Links>
+          <Link>Help</Link>
+          <Link>Privacy</Link>
+          <Link>Terms</Link>
+        </Links>
+      </More>
+    </Container>
+  );
 };
 
 export default SignIn;
