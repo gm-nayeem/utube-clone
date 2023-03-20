@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import newRequest from "../utils/request";
+import {publicRequest} from "../utils/request";
 import {format} from "timeago.js"
 
 
@@ -47,7 +47,7 @@ const Comment = ({comment}) => {
   // fetch channel user
   useEffect(() => {
     const fetchComment = async () => {
-      const res = await newRequest.get(`/users/find/${comment.userId}`);
+      const res = await publicRequest.get(`/users/find/${comment.userId}`);
       setChannel(res.data);
     };
     fetchComment();

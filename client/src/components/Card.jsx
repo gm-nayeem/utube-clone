@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { format } from "timeago.js"
-import newRequest from "../utils/request";
+import { publicRequest } from "../utils/request";
 
 
 const Container = styled.div`
@@ -67,7 +67,7 @@ const Card = ({ type, video }) => {
   // fetch channel user
   useEffect(() => {
     const fetchChannel = async () => {
-      const res = await newRequest.get(`/users/find/${video.userId}`);
+      const res = await publicRequest.get(`/users/find/${video.userId}`);
       setChannel(res.data);
     };
     fetchChannel();

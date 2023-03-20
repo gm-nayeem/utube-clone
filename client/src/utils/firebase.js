@@ -1,10 +1,8 @@
 import { initializeApp } from "firebase/app";
 import {getAuth, GoogleAuthProvider} from "firebase/auth";
 
-const FIREBASE_API_KEY="AIzaSyBDE5z5KIxU4jr18U8-4hnrFfeTh-HNKb8";
-
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
+  apiKey: "AIzaSyBDE5z5KIxU4jr18U8-4hnrFfeTh-HNKb8",
   authDomain: "utube-clone-2141b.firebaseapp.com",
   projectId: "utube-clone-2141b",
   storageBucket: "utube-clone-2141b.appspot.com",
@@ -14,9 +12,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+export const auth = getAuth();
+export const provider = new GoogleAuthProvider();
 
 export default app;
+
+
+
 
 

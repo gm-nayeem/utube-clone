@@ -30,16 +30,11 @@ const signin = async (req, res, next) => {
         const token = jwt.sign(
             { id: user._id }, 
             process.env.JWT_SEC,
-            {expiresIn: '3d'}
+            {expiresIn: '7h'}
         );
         const { password, ...others } = user._doc;
 
-        res
-            .cookie("access_token", token, {
-                httpOnly: true,
-            })
-            .status(200)
-            .json(others);
+        res.status(200).json({...others, token});
     } catch (err) {
         next(err);
     }
@@ -51,12 +46,7 @@ const googleAuth = async (req, res, next) => {
         const user = await User.findOne({ email: req.body.email });
         if (user) {
             const token = jwt.sign({ id: user._id }, process.env.JWT);
-            res
-                .cookie("access_token", token, {
-                    httpOnly: true,
-                })
-                .status(200)
-                .json(user._doc);
+            res.status(200).json({token});
         } else {
             const newUser = new User({
                 ...req.body,
@@ -64,12 +54,7 @@ const googleAuth = async (req, res, next) => {
             });
             const savedUser = await newUser.save();
             const token = jwt.sign({ id: savedUser._id }, process.env.JWT);
-            res
-                .cookie("access_token", token, {
-                    httpOnly: true,
-                })
-                .status(200)
-                .json(savedUser._doc);
+            res.status(200).json({...savedUser._doc, token});
         }
     } catch (err) {
         next(err);

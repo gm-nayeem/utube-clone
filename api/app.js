@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser");
 
 // routes
 const userRoutes = require("./routes/usersRoute");
@@ -30,7 +30,7 @@ const connect = () => {
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 
 
 // routes

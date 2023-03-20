@@ -5,9 +5,9 @@ import {
 } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import newRequest from "../utils/request";
-import {auth, googleProvider} from "../utils/firebase";
-import {signInWithPopup} from "firebase/auth";
+import { publicRequest } from "../utils/request";
+import { auth, provider } from "../utils/firebase";
+import { signInWithPopup } from "firebase/auth";
 // import { async } from "@firebase/util";
 
 
@@ -85,8 +85,8 @@ const SignIn = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await newRequest.post("/auth/signup", { name, email, password });
-      navigate("/login");
+      await publicRequest.post("/auth/signup", { name, email, password });
+      navigate("/signin");
     } catch (err) {
       console.log(err);
     }
@@ -97,7 +97,7 @@ const SignIn = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      const res = await newRequest.post("/auth/signin", { name, password });
+      const res = await publicRequest.post("/auth/signin", { name, password });
       dispatch(loginSuccess(res.data));
       navigate("/")
     } catch (err) {
@@ -108,16 +108,18 @@ const SignIn = () => {
   // google login
   const signInWithGoogle = async () => {
     dispatch(loginStart());
-    signInWithPopup(auth, googleProvider)
+
+    signInWithPopup(auth, provider)
       .then((result) => {
-        newRequest
+        console.log("data: ", result);
+        publicRequest
           .post("/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,
           })
           .then((res) => {
-            console.log(res);
+            console.log("res: ", res.data);
             dispatch(loginSuccess(res.data));
             navigate("/");
           });
@@ -133,7 +135,7 @@ const SignIn = () => {
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to MernTube</SubTitle>
+        <SubTitle>To continue with MernTube</SubTitle>
         <Input
           placeholder="username"
           onChange={(e) => setName(e.target.value)}

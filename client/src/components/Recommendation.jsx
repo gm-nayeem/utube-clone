@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import newRequest from "../utils/request";
+import {publicRequest} from "../utils/request";
 import Card from "./Card";
 
 
@@ -14,7 +14,7 @@ const Recommendation = ({ tags }) => {
     // fetch tags videos
     useEffect(() => {
         const fetchVideos = async () => {
-            const res = await newRequest.get(`/videos/tags?tags=${tags}`);
+            const res = await publicRequest.get(`/videos/tags?tags=${tags}`);
             setVideos(res.data);
         };
         fetchVideos();

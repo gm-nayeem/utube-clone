@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
-import newRequest from "../utils/request";
+import { publicRequest} from "../utils/request";
 import { useSelector } from "react-redux";
 
 
@@ -38,7 +38,7 @@ const Comments = ({ videoId }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const res = await newRequest.get(`/comments/${videoId}`);
+        const res = await publicRequest.get(`/comments/${videoId}`);
         setComments(res.data);
       } catch (err) { console.log(err) }
     };

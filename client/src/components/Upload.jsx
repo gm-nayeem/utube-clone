@@ -6,9 +6,9 @@ import {
     uploadBytesResumable,
     getDownloadURL,
 } from "firebase/storage";
-import app from "../firebase";
+import app from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
-import newRequest from "../utils/request";
+import { userRequest } from "../utils/request";
 
 
 const Container = styled.div`
@@ -85,7 +85,7 @@ const Upload = ({ setOpen }) => {
     const [inputs, setInputs] = useState({});
     const [tags, setTags] = useState([]);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setInputs((prev) => {
@@ -121,7 +121,24 @@ const Upload = ({ setOpen }) => {
                         break;
                 }
             },
-            (error) => { console.log(error) },
+            (error) => {
+                switch (error.code) {
+                    case 'storage/unauthorized':
+                        // User doesn't have permission to access the object
+                        console.log('storage/unauthorized');
+                        break;
+                    case 'storage/canceled':
+                        // User canceled the upload
+                        console.log('storage/canceled');
+                        break;
+                    case 'storage/unknown':
+                        // Unknown error occurred, inspect error.serverResponse
+                        console.log('storage/unknown');
+                        break;
+                    default:
+                        break;
+                }
+            },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     setInputs((prev) => {
@@ -145,10 +162,9 @@ const Upload = ({ setOpen }) => {
     // submit video
     const handleUpload = async (e) => {
         e.preventDefault();
-
-        const res = await newRequest.post("/videos", { ...inputs, tags })
-        setOpen(false)
-        res.status === 200 && navigate(`/video/${res.data._id}`)
+        const res = await userRequest.post("/videos", { ...inputs, tags });
+        setOpen(false);
+        res.status === 200 && navigate(`/video/${res.data._id}`);
     }
 
     return (
@@ -158,7 +174,7 @@ const Upload = ({ setOpen }) => {
                 <Title>Upload a New Video</Title>
                 <Label>Video:</Label>
                 {videoPerc > 0 ? (
-                    "Uploading:" + videoPerc
+                    `Uploading:  ${videoPerc}`
                 ) : (
                     <Input
                         type="file"
@@ -181,7 +197,7 @@ const Upload = ({ setOpen }) => {
                 <Input
                     type="text"
                     placeholder="Separate the tags with commas."
-                    onChance={handleTags}
+                    onChange={handleTags}
                 />
                 <Label>Image:</Label>
                 {imgPerc > 0 ? (

@@ -4,17 +4,19 @@ import {
   ThumbUpOutlined,
   ThumbDownOffAltOutlined,
   ReplyOutlined,
-  AddTaskOutlined
+  AddTaskOutlined,
+  ThumbUp,
+  ThumbDown
 } from "@mui/icons-material";
 import Comments from "../components/Comments";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import newRequest from "../utils/request";
+import { publicRequest, userRequest } from "../utils/request";
 import { like, dislike, fetchSuccess } from "../redux/videoSlice"
 import Recommendation from "../components/Recommendation";
 import { format } from "timeago.js";
+import {subscription} from "../redux/userSlice";
 
-import testVdo from "../assets/testVdo.mp4";
 
 const Container = styled.div`
   display: flex;
@@ -131,8 +133,8 @@ const Video = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const videoRes = await newRequest.get(`/videos/find/${videoId}`);
-        const channelRes = await newRequest.get(`/users/find/${videoRes.data.userId}`);
+        const videoRes = await publicRequest.get(`/videos/find/${videoId}`);
+        const channelRes = await publicRequest.get(`/users/find/${videoRes.data.userId}`);
 
         setChannel(channelRes.data);
         dispatch(fetchSuccess(videoRes.data));
@@ -143,21 +145,21 @@ const Video = () => {
 
   // handle like
   const handleLike = async () => {
-    await newRequest.put(`/users/like/${currentVideo._id}`);
+    await userRequest.put(`/users/like/${currentVideo._id}`);
     dispatch(like(currentUser._id));
   };
 
   // handle dislike
   const handleDislike = async () => {
-    await newRequest.put(`/users/dislike/${currentVideo._id}`);
+    await userRequest.put(`/users/dislike/${currentVideo._id}`);
     dispatch(dislike(currentUser._id));
   };
 
   // handle subscribers
   const handleSub = async () => {
     currentUser.subscribedUsers.includes(channel._id)
-      ? await newRequest.put(`/users/unsub/${channel._id}`)
-      : await newRequest.put(`/users/sub/${channel._id}`);
+      ? await userRequest.put(`/users/unsub/${channel._id}`)
+      : await userRequest.put(`/users/sub/${channel._id}`);
     dispatch(subscription(channel._id));
   };
 
@@ -165,8 +167,8 @@ const Video = () => {
     <Container>
       <Content>
         <VideoWrapper>
-        {/* currentVideo?.videoUrl */}
-          <VideoFrame src={testVdo}
+          <VideoFrame src={currentVideo?.videoUrl}
+            autoPlay
             progress
             controls
           />
