@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import CardImage from "../assets/react.jpeg"
-import myLogo from "../assets/myLogo.jpeg";
+import { format } from "timeago.js"
+import newRequest from "../utils/request";
 
 
 const Container = styled.div`
@@ -26,10 +26,10 @@ const Image = styled.img`
 `;
 
 const Details = styled.div`
+  flex: 1;
   display: flex;
   margin-top: ${(props) => props.type !== "sm" && "16px"};
   gap: 12px;
-  flex: 1;
 `;
 
 const ChannelImage = styled.img`
@@ -60,25 +60,37 @@ const Info = styled.div`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-const Card = ({ type }) => {
+
+const Card = ({ type, video }) => {
+  const [channel, setChannel] = useState({});
+
+  // fetch channel user
+  useEffect(() => {
+    const fetchChannel = async () => {
+      const res = await newRequest.get(`/users/find/${video.userId}`);
+      setChannel(res.data);
+    };
+    fetchChannel();
+  }, [video.userId]);
+
   return (
-    <Link to="/video/test" style={{ textDecoration: "none" }}>
+    <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
         <ImageContainer>
           <Image
             type={type}
-            src={CardImage}
+            src={video.imgUrl}
           />
         </ImageContainer>
         <Details type={type}>
           <ChannelImage
             type={type}
-            src={myLogo}
+            src={channel.img}
           />
           <Texts>
-            <Title>Test Video</Title>
-            <ChannelName>Mern Dev</ChannelName>
-            <Info>660,908 views • 1 day ago</Info>
+            <Title>{video.title}</Title>
+            <ChannelName>{channel.name}</ChannelName>
+            <Info>{video.views} views • {format(video.createdAt)}</Info>
           </Texts>
         </Details>
       </Container>

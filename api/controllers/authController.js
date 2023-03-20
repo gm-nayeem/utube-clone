@@ -27,7 +27,11 @@ const signin = async (req, res, next) => {
 
         if (!isCorrect) return next(createError(400, "Wrong Credentials!"));
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SEC);
+        const token = jwt.sign(
+            { id: user._id }, 
+            process.env.JWT_SEC,
+            {expiresIn: '3d'}
+        );
         const { password, ...others } = user._doc;
 
         res

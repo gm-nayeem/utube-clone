@@ -42,7 +42,9 @@ function App() {
                 <Route path="/">
                   <Route
                     index
-                    element={currentUser ? <Home /> : <Navigate to="/signin" />}
+                    element={
+                      currentUser ? <Home type="random" /> : <Navigate to="/signin" />
+                    }
                   />
                   {
                     currentUser && (

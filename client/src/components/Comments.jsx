@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
-import myLogo from "../assets/myLogo.jpeg";
+import newRequest from "../utils/request";
+import { useSelector } from "react-redux";
 
 
 const Container = styled.div``;
@@ -29,22 +30,36 @@ const Input = styled.input`
   width: 100%;
 `;
 
-const Comments = () => {
-    return (
-        <Container>
-            <NewComment>
-                <Avatar src={myLogo} />
-                <Input placeholder="Add a comment..." />
-            </NewComment>
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-        </Container>
-    );
+const Comments = ({ videoId }) => {
+  const { currentUser } = useSelector((state) => state.user);
+  const [comments, setComments] = useState([]);
+
+  // fetch comments
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await newRequest.get(`/comments/${videoId}`);
+        setComments(res.data);
+      } catch (err) { console.log(err) }
+    };
+    fetchComments();
+  }, [videoId]);
+
+  //TODO: ADD NEW COMMENT FUNCTIONALITY
+
+  return (
+    <Container>
+      <NewComment>
+        <Avatar src={currentUser.img} />
+        <Input placeholder="Add a comment..." />
+      </NewComment>
+      {
+        comments.map((comment) => (
+          <Comment key={comment.id} comment={comment} />
+        ))
+      }
+    </Container>
+  );
 };
 
 export default Comments;
