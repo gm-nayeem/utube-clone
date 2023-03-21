@@ -128,11 +128,12 @@ const Video = () => {
 
   const videoId = useLocation().pathname.split("/")[2];
 
-
-  // fetch channel user and video
+  
+  // update views, fetch video and channel user
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await publicRequest.put(`/videos/view/${videoId}`);
         const videoRes = await publicRequest.get(`/videos/find/${videoId}`);
         const channelRes = await publicRequest.get(`/users/find/${videoRes.data.userId}`);
 
