@@ -11,7 +11,6 @@ const videoRoutes = require("./routes/videosRoute");
 const commentRoutes = require("./routes/commentsRoute");
 const authRoutes = require("./routes/authRoute");
 
-
 const app = express();
 
 // mongoose connect
